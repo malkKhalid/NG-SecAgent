@@ -1,0 +1,5 @@
+{
+  "name": "Sentinel AI-SIEM",
+  "description": "A hybrid AI-powered security dashboard visualizing system logs, detecting anomalies, and providing threat intelligence.",
+  "requestFramePermissions": []
+}
