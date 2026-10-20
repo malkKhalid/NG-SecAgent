@@ -2,7 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { LogEntry, LogLevel } from '../types';
 import { X, Bot, ShieldAlert, Activity } from 'lucide-react';
 import { analyzeLogLocal } from '../services/geminiService';
-import ReactMarkdown from 'react-markdown'; // Assuming basic markdown rendering or text display
+import ReactMarkdown, { type Components } from 'react-markdown';
+
+// Tailwind is loaded from the CDN without the typography plugin, so the `prose`
+// classes do nothing. Style the markdown elements explicitly instead.
+const markdownComponents: Components = {
+  h1: ({ children }) => <h1 className="text-lg font-bold text-white mb-3">{children}</h1>,
+  h2: ({ children }) => <h2 className="text-base font-bold text-white mb-3">{children}</h2>,
+  h3: ({ children }) => <h3 className="text-base font-bold text-blue-300 mb-3">{children}</h3>,
+  // pre-line keeps the single line breaks the analysis text uses between fields
+  p: ({ children }) => <p className="mb-3 last:mb-0 whitespace-pre-line">{children}</p>,
+  strong: ({ children }) => <strong className="font-semibold text-white">{children}</strong>,
+  ul: ({ children }) => <ul className="list-disc pl-5 mb-3 space-y-1">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal pl-5 mb-3 space-y-1">{children}</ol>,
+  code: ({ children }) => <code className="bg-black/40 px-1 py-0.5 rounded text-xs font-mono text-green-400">{children}</code>,
+};
 
 interface AnalysisModalProps {
   log: LogEntry | null;
@@ -93,11 +107,7 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({ log, osType, onClose }) =
 
             {analysis && (
               <div className="bg-gradient-to-br from-blue-900/20 to-purple-900/20 rounded-lg p-5 border border-blue-500/30 text-slate-200 text-sm leading-relaxed shadow-inner">
-                <div className="prose prose-invert prose-sm max-w-none">
-                  <pre className="whitespace-pre-wrap font-sans bg-transparent border-none p-0 m-0 text-slate-200">
-                    {analysis}
-                  </pre>
-                </div>
+                <ReactMarkdown components={markdownComponents}>{analysis}</ReactMarkdown>
               </div>
             )}
           </div>
